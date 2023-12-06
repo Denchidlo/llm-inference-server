@@ -1,9 +1,17 @@
-import torch
+import numpy as np
 from pytriton.client import ModelClient
 
-input1_data = torch.randn(128, 2).cpu().detach().numpy()
+from utils import pack_strings, unpack_strings
+
+input_data = [
+    "inp1",
+    "inp2",
+    "inp3"
+]
 
 with ModelClient("localhost:8000", "Linear") as client:
-    result_dict = client.infer_batch(input1_data)
+    input_data = pack_strings(input_data)
+    output = client.infer_batch(input_data)
+    output = unpack_strings(output)
 
-print(result_dict)
+print(output)
