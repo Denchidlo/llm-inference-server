@@ -6,7 +6,7 @@ from batched_inference.base.client import Client
 def infer_batch(input, **kwargs):
     # TODO: client should be initialized outside?
     client = Client("localhost:8000", "LLM")
-    output = client.inference_batch(input)
+    output = client.inference_batch(input, **kwargs)
     return output
 
 
