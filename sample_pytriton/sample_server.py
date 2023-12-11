@@ -47,7 +47,7 @@ class DeepSpeedBackend:
         )
 
     def generate(self, batch):
-        outputs = self._pipe(batch, max_length=50)
+        outputs = self._pipe(batch, max_length=100)
         if isinstance(batch, str):
             return [outputs[0]["generated_text"]]
         return [out[0]["generated_text"] for out in outputs]
@@ -60,12 +60,10 @@ class VanillaHFBackend:
         self._pipe = pipeline("text-generation", model=hf_model_name, device=device)
 
     def generate(self, batch):
-        print("here")
-        outputs = self._pipe(batch, max_length=50)
-        print(outputs)
+        outputs = self._pipe(batch, max_length=100)
         if isinstance(batch, str):
             return [outputs[0]["generated_text"]]
-        return [out[0]["generated_text"] for out in outputs]
+        return [out[0]["generated_text"][len(inp):] for inp, out in zip(batch, outputs)]
 
 
 @batch
