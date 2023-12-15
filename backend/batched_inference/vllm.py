@@ -1,4 +1,3 @@
-import math
 import vllm
 
 from batched_inference.base import BaseLLM
@@ -15,5 +14,7 @@ class LLM(BaseLLM):
 
         outputs = []
         for mini_batch in self._split_to_mini_batches(batch, batch_size):
-            outputs.extend(self._model.generate(mini_batch, sampling_params))          
-        return [output.outputs[0].text for output in outputs]
+            outputs.extend(self._model.generate(mini_batch, sampling_params))
+
+        outputs = [output.outputs[0].text for output in outputs]
+        return outputs

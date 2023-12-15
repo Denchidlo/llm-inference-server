@@ -8,11 +8,13 @@ in_file = "in.json"
 out_file = "out.json"
 
 def load_data(filename):
-    return json.load(open(filename, "r"))
+    with open(filename, "r") as file:
+        return json.load(file)
 
 
 def store_data(data, filename):
-    json.dump(data, open(filename, "w"), indent=4)
+    with open(filename, "w") as file:
+        json.dump(data, file, indent=4)
 
 
 llm = LLM(model_name)

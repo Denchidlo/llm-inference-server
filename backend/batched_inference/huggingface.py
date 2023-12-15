@@ -1,5 +1,3 @@
-import math
-
 from transformers import pipeline
 from batched_inference.base import BaseLLM
 
@@ -15,7 +13,15 @@ class LLM(BaseLLM):
     def infer_batch(self, batch: list[str], **infer_params) -> list[str]:
         # if provided, prefer batch_size from kwargs over the real size of batch
         batch_size = infer_params.pop("batch_size", len(batch))
+        return_full_text = infer_params.pop("return_full_text", False)
         outputs = []
         for mini_batch in self._split_to_mini_batches(batch, batch_size):
-            outputs.extend(self._pipe(mini_batch, batch_size=batch_size, **infer_params))
-        return [out[0]["generated_text"][len(inp):] for inp, out in zip(batch, outputs)]
+            outputs.extend(self._pipe(
+                mini_batch, 
+                batch_size=batch_size, 
+                return_full_text=return_full_text, 
+                **infer_params
+            ))
+        
+        outputs = [out[0]["generated_text"] for out in outputs]
+        return outputs
