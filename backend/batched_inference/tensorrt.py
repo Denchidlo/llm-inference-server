@@ -25,7 +25,12 @@ class LLM(BaseLLM):
 
 
     def infer_batch(self, batch: list[str], **infer_params) -> list[str]:
-        batch_size = infer_params.pop("batch_size", len(batch))
+        batch_size = infer_params.pop("batch_size", self._runner.max_batch_size)
+        if self._runner.max_batch_size < batch_size:
+            print(f"Warning: set batch size {batch_size} exceeds trt engine " \
+                    f"max batch size {self._runner.max_batch_size}, " \
+                    f"setting batch_size to {self._runner.max_batch_size}")
+            batch_size = self._runner.max_batch_size
 
         outputs = []
         for mini_batch in self._split_to_mini_batches(batch, batch_size):
