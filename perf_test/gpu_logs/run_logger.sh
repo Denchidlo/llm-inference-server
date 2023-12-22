@@ -1,1 +1,0 @@
-nvidia-smi --query-gpu=name,timestamp,utilization.gpu,utilization.memory,memory.total -lms 100 --format=csv -f gpu_log.csv
