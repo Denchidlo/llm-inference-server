@@ -4,7 +4,7 @@ import math
 
 class BaseLLM(ABC):
     @abstractmethod
-    def infer_batch(self, batch: list[str], **infer_params) -> list[str]:
+    def infer_batch(self, data: list[str], batch_size: t.Optional[int]=None, **infer_params) -> list[str]:
         raise NotImplementedError()
     
 
