@@ -4,6 +4,13 @@ import random
 import argparse
 
 
+TRT_ENGINE_PATH = "/code/tensorrt_llm/examples/llama/llama_2_hf/7b/trt_engines/weight_only/1-gpu"
+TOKENIZER_PATH = "/code/tensorrt_llm/examples/llama/llama_2_hf/7b/"
+MODEL_NAME = "TheBloke/Llama-2-7B-AWQ"
+IN_FILE = "in.json"
+OUT_FILE = "out.json"
+
+
 def parse_arguments(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--backend", type=str, required=True, help="One of \{vllm, hf, trt\}")
@@ -20,24 +27,18 @@ def store_data(data, filename):
         json.dump(data, file, indent=4)
 
 
-def main(args):
-    trt_engine_path = "/code/tensorrt_llm/examples/llama/llama_2_hf/7b/trt_engines/weight_only/1-gpu"
-    tokenizer_path = "/code/tensorrt_llm/examples/llama/llama_2_hf/7b/"
-    model_name = "TheBloke/Llama-2-7B-AWQ"
-    in_file = "in.json"
-    out_file = "out.json"
-    
+def main(args):    
     if args.backend == "vllm":
         from batched_inference.vllm import LLM
-        llm = LLM(model_name)
+        llm = LLM(MODEL_NAME)
     elif args.backend == "hf":
         from batched_inference.huggingface import LLM
-        llm = LLM(model_name)
+        llm = LLM(MODEL_NAME)
     elif args.backend == "trt":
         from batched_inference.tensorrt import LLM
-        llm = LLM(tokenizer_path, trt_engine_path)
+        llm = LLM(TOKENIZER_PATH, TRT_ENGINE_PATH)
 
-    data  = load_data(in_file)
+    data  = load_data(IN_FILE)
 
     begin = time.time()
     if args.backend == "vllm":
@@ -66,7 +67,7 @@ def main(args):
     end = time.time()
     print(f"elapsed: {end - begin} s.")
 
-    store_data(output, out_file)
+    store_data(output, OUT_FILE)
 
 
 

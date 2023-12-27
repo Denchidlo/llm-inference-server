@@ -1,3 +1,5 @@
+import typing as t
+
 import torch
 from batched_inference.base import BaseLLM
 
@@ -24,8 +26,8 @@ class LLM(BaseLLM):
         )
 
 
-    def infer_batch(self, batch: list[str], **infer_params) -> list[str]:
-        batch_size = infer_params.pop("batch_size", self._runner.max_batch_size)
+    def infer_batch(self, data: list[str], batch_size: t.Optional[int]=None, **infer_params) -> list[str]:
+        batch_size = batch_size or self._runner.max_batch_size
         if self._runner.max_batch_size < batch_size:
             print(f"Warning: set batch size {batch_size} exceeds trt engine " \
                     f"max batch size {self._runner.max_batch_size}, " \
@@ -33,7 +35,7 @@ class LLM(BaseLLM):
             batch_size = self._runner.max_batch_size
 
         outputs = []
-        for mini_batch in self._split_to_mini_batches(batch, batch_size):
+        for mini_batch in self._split_to_mini_batches(data, batch_size):
             outputs.extend(self._infer_mini_batch(mini_batch, **infer_params))
 
         return outputs

@@ -13,9 +13,10 @@ def load_tokenizer(tokenizer_dir: Optional[str] = None,
                    model_name: str = 'gpt',
                    tokenizer_type: Optional[str] = None):
     if vocab_file is None:
-        use_fast = True
-        if tokenizer_type is not None and tokenizer_type == "llama":
+        if tokenizer_type == "llama":
             use_fast = False
+        else:
+            use_fast = True
         # Should set both padding_side and truncation_side to be 'left'
         tokenizer = AutoTokenizer.from_pretrained(tokenizer_dir,
                                                   legacy=False,
@@ -26,7 +27,8 @@ def load_tokenizer(tokenizer_dir: Optional[str] = None,
                                                   use_fast=use_fast)
     else:
         # For gpt-next, directly load from tokenizer.model
-        assert model_name == 'gpt'
+        if model_name != 'gpt':
+            raise ValueError("model_name must be gpt if vocab_file is provided")
         tokenizer = T5Tokenizer(vocab_file=vocab_file,
                                 padding_side='left',
                                 truncation_side='left')
@@ -62,9 +64,11 @@ def read_model_name(engine_dir: str):
         config = json.load(f)
 
     if engine_version is None:
-        return config['builder_config']['name']
+        model_name = config['builder_config']['name']
+    else:
+        model_name = config['pretrained_config']['architecture']
 
-    return config['pretrained_config']['architecture']
+    return model_name
 
 
 def parse_input(tokenizer,
@@ -78,9 +82,9 @@ def parse_input(tokenizer,
     batch_input_ids = []
     for curr_text in input_text:
         input_ids = tokenizer.encode(curr_text,
-                                        add_special_tokens=add_special_tokens,
-                                        truncation=True,
-                                        max_length=max_input_length)
+                                     add_special_tokens=add_special_tokens,
+                                     truncation=True,
+                                     max_length=max_input_length)
         batch_input_ids.append(input_ids)
     
     batch_input_ids = [
