@@ -2,9 +2,11 @@ import typing as t
 
 from transformers import pipeline
 from batched_inference.base import BaseLLM
+from batched_inference import AvailableBackends
 
 class LLM(BaseLLM):
     def __init__(self, model_name: str, **kwargs):
+        self.backend_type = AvailableBackends.HF
         if "device" not in kwargs.keys():
             kwargs["device"] = "cuda"
         self._pipe = pipeline("text-generation", model=model_name, **kwargs)

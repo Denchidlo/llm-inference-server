@@ -1,6 +1,3 @@
-import time
-import sys
-
 from .services.parser import Parser
 from .services.processing import Processing
 from .services.prompter import Prompter

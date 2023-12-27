@@ -3,9 +3,11 @@ import typing as t
 import vllm
 
 from batched_inference.base import BaseLLM
+from batched_inference import AvailableBackends
 
 class LLM(BaseLLM):
     def __init__(self, model_name, **kwargs):
+        self.backend_type = AvailableBackends.VLLM
         self._model = vllm.LLM(model=model_name, **kwargs)
 
 

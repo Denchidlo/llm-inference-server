@@ -2,6 +2,7 @@ import typing as t
 
 import torch
 from batched_inference.base import BaseLLM
+from batched_inference import AvailableBackends
 
 from batched_inference.utils import (load_tokenizer, read_model_name,
                                      parse_input, parse_output)
@@ -13,6 +14,7 @@ if PYTHON_BINDINGS:
 
 class LLM(BaseLLM):
     def __init__(self, tokenizer_dir, trt_engine_dir, **kwargs):
+        self.backend_type = AvailableBackends.TENSORRTLLM
         model_name = read_model_name(trt_engine_dir)
         self._tokenizer, _, _ = load_tokenizer(
             tokenizer_dir,

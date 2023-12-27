@@ -3,8 +3,9 @@ import subprocess
 import json
 import sys
 
+from batched_inference import AvailableBackends, create_model
 from fg_client.pipeline import load_data as fg_load_data
-from utils import AvailableBackends, create_model, InferenceMeasurer, compute_gpu_stats
+from utils import InferenceMeasurer, compute_gpu_stats
 
 
 def parse_args():
@@ -30,7 +31,7 @@ def parse_args():
 def main(args):
     gpu_logs_file = "gpu_log.csv"
 
-    model = create_model(args.model_dir, args.converted_model_dir, args.backend)
+    model = create_model(args.backend, args.model_dir, args.converted_model_dir)
 
     measurer = InferenceMeasurer(fg_load_data)
     measurer.load_data(args.data_path, num_samples=args.num_samples)
@@ -40,8 +41,7 @@ def main(args):
         cmd_str = "nvidia-smi --query-gpu=name,timestamp,utilization.gpu,utilization.memory,memory.total -lms 100 --format=csv -f"
         gpu_logging_proc = subprocess.Popen(cmd_str.split(' ') + [gpu_logs_file])
 
-        inference_time = measurer.measure(model, args.backend, 
-                                          args.max_tokens_generated, batch_size)
+        inference_time = measurer.measure(model, args.max_tokens_generated, batch_size)
 
         gpu_logging_proc.terminate()
         gpu_logging_proc.wait()
