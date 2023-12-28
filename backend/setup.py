@@ -3,10 +3,11 @@ import functools
 
 
 extras = {
-    'vllm': ['vllm>=0.2.3'],
-    'tensorrt-llm' : ['tensorrt_llm>=0.6.1', 'torch>=2.1.0'],
+    'vllm': ['vllm==0.2.3'],
+    'tensorrt-llm' : ['transformers==4.33.1', 'tensorrt_llm==0.6.1'],
     'deepspeed': ['deepspeed>=0.12.5'],
-    'onnx': ['optimum>=1.16.0']
+    'onnx': ['optimum[onnxruntime-gpu]'],
+    'perf_test': ['boto3', 'langchain', 'openpyxl']
 }
 extras['all'] = functools.reduce(lambda a, b: a + b, [v for v in extras.values()], [])
 
@@ -21,7 +22,7 @@ setup(
     author_email='', 
     packages=['batched_inference'], 
     install_requires=[ 
-        'transformers>=4.35.2'
+        'transformers'
     ], 
     extras_require=extras
 ) 
