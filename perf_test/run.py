@@ -28,8 +28,22 @@ def parse_args():
     return args
 
 
+class ProcManager:
+    def __init__(self, proc_param_list):
+        self._proc_param_list = proc_param_list
+
+    def __enter__(self):
+        self._proc = subprocess.Popen(self._proc_param_list)
+
+    def __exit__(self, exc_type, exc_value, exc_traceback):
+        self._proc.terminate()
+        self._proc.wait()
+
+
 def main(args):
     gpu_logs_file = "gpu_log.csv"
+    nvidia_smi_cmd_str = "nvidia-smi --query-gpu=name,timestamp,utilization.gpu,utilization.memory,memory.total -lms 100 --format=csv -f"
+    nvidia_smi_proc_param_list = nvidia_smi_cmd_str.split(' ') + [gpu_logs_file]
 
     model = create_model(args.backend, args.model_dir, args.converted_model_dir)
 
@@ -38,13 +52,8 @@ def main(args):
 
     result_dict = []
     for batch_size in args.batch_size_list:
-        cmd_str = "nvidia-smi --query-gpu=name,timestamp,utilization.gpu,utilization.memory,memory.total -lms 100 --format=csv -f"
-        gpu_logging_proc = subprocess.Popen(cmd_str.split(' ') + [gpu_logs_file])
-
-        inference_time = measurer.measure(model, args.max_tokens_generated, batch_size)
-
-        gpu_logging_proc.terminate()
-        gpu_logging_proc.wait()
+        with ProcManager(nvidia_smi_proc_param_list):
+            inference_time = measurer.measure(model, args.max_tokens_generated, batch_size)
 
         gpu_stats = compute_gpu_stats(gpu_logs_file)
 
