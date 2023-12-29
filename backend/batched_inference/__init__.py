@@ -1,3 +1,4 @@
+import typing as t
 from enum import Enum
 
 
@@ -12,7 +13,7 @@ class AvailableBackends(str, Enum):
 WRONG_BACKEND_ERROR_MESSAGE = f"Specified backend type isnt supported. Available backends: {list(b.value for b in AvailableBackends)}"
 
 
-def create_model(backend: str, model_dir: str, converted_model_dir: str | None=None):
+def create_model(backend: str, model_dir: str, converted_model_dir: t.Optional[str]=None):
     if backend == AvailableBackends.HF:
         from batched_inference.huggingface import LLM
         llm = LLM(model_dir)
