@@ -31,7 +31,11 @@ Note: You can install package into your environment via `pip install backend/.[<
         Convertations is not required
     - onnx-runtime
 
-        *currently not working*
+        ```bash
+        optimum-cli export onnx -m bigscience/bloom-1b1 --optimize O2 --device cuda --fp16 bloom_onnx/
+        ```
+
+        Example above performs convertation of bloom-1b1 to onnx format using optimum cli. `bloom_onnx/` here is output dir, where converted model is stored.
         
     - tensorrt-llm
         Script for building llama-like model engine can be found [here](https://github.com/NVIDIA/TensorRT-LLM/tree/main/examples/llama).
@@ -45,7 +49,7 @@ Note: You can install package into your environment via `pip install backend/.[<
 
         ```bash
         # Build the LLaMA 7B model using a single GPU and apply INT8 weight-only quantization.
-        python build.py --model_dir ./tmp/llama/7B/ \
+        python build.py --model_dir ./tmp/llama-2-7b-hf/ \
                         --dtype float16 \
                         --remove_input_padding \
                         --use_gpt_attention_plugin float16 \
@@ -54,7 +58,7 @@ Note: You can install package into your environment via `pip install backend/.[<
                         --use_weight_only \
                         --max_batch_size 4 \
                         --max_input_len 1024 \
-                        --output_dir ./tmp/llama/7B/trt_engines/weight_only/1-gpu/
+                        --output_dir ./tmp/llama-2-7b-hf/trt_engines/weight_only/1-gpu/
         ```
 
 2. Creating model instance
