@@ -28,7 +28,9 @@ Note: You can install package into your environment via `pip install backend/.[<
 
 1. Convertation
     - vllm, huggingface, deepspeed
-        Convertations is not required
+
+        Convertation is not required
+
     - onnx-runtime
 
         ```bash
@@ -36,8 +38,10 @@ Note: You can install package into your environment via `pip install backend/.[<
         ```
 
         Example above performs convertation of bloom-1b1 to onnx format using optimum cli. `bloom_onnx/` here is output dir, where converted model is stored.
+        For more examples and quantization refer to [original guide](https://github.com/huggingface/optimum#onnx--onnx-runtime).
         
     - tensorrt-llm
+
         Script for building llama-like model engine can be found [here](https://github.com/NVIDIA/TensorRT-LLM/tree/main/examples/llama).
         Further actions are done from `examples/llama/` directory in Tensorrt-llm repo.
         Clone model repo:
@@ -45,7 +49,7 @@ Note: You can install package into your environment via `pip install backend/.[<
         ```bash
         mkdir -p ./tmp/llama-2-7b-hf && git clone https://huggingface.co/daryl149/llama-2-7b-hf ./tmp/llama-2-7b-hf
         ```
-        Build an engine:(for more build examples refer to original repo)
+        Build an engine(for more build examples refer to original repo):
 
         ```bash
         # Build the LLaMA 7B model using a single GPU and apply INT8 weight-only quantization.
