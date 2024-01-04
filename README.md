@@ -94,14 +94,16 @@ Note: You can install package into your environment via `pip install backend/.[<
 
 4. Performance testing
 
+    Script below should be run from `perf_test/`.
+
     ```bash
-    python perf_test/run.py --backend vllm \
+    python run.py --backend vllm \
                             --model_dir TheBloke/Llama-2-7B-AWQ \
-                            --data_path perf_test/fg_client/data.xlsx \
+                            --data_path fg_client/data.xlsx \
                             --num_samples 10 \
                             --batch_size_list 1,2,4 \
                             --max_tokens_generated 100 \
-                            --output_file perf_test/out.json
+                            --output_file out.json
     ```
 
     This script writes to a file(or stdout, if file is not specified) statistics(walltime of inference, gpu utilization and memory consumption) on model run in json format.
