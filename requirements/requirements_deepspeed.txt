@@ -1,0 +1,2 @@
+transformers
+deepspeed>=0.12.5

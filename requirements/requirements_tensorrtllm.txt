@@ -1,0 +1,2 @@
+transformers==4.33.1
+tensorrt_llm==0.6.1
