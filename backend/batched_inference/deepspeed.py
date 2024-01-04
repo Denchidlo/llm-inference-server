@@ -1,10 +1,11 @@
 import torch
 import deepspeed
-from batched_inference import huggingface
+from batched_inference import huggingface, AvailableBackends
 
 class LLM(huggingface.LLM):
     def __init__(self, model_name, **kwargs):
         super().__init__(model_name, **kwargs)
+        self.backend_type = AvailableBackends.DS
 
         # model surgery for TheBloke/Llama-2-7b-AWQ
         for module in self._pipe.model.modules():
